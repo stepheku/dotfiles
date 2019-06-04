@@ -1,0 +1,17 @@
+{
+    "window.zoomLevel": 1,
+    "editor.lineNumbers": "relative",
+    "vim.useSystemClipboard": true,
+    // Ignore the following vim keybindings
+    "vim.handleKeys": {
+        "<C-w>": false,
+        "<C-n>": false,
+        "<C-c>": false,
+        "<C-v>": false,
+        "<C-a>": false,
+        "<C-PageUp>": false,
+        "<C-PageDown>": false,
+        "<C-f>": false,
+    },
+    "git.autofetch": true
+}
