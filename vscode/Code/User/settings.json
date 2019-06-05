@@ -9,6 +9,7 @@
         "<C-c>": false,
         "<C-v>": false,
         "<C-a>": false,
+        "<C-k>": false,
         "<C-PageUp>": false,
         "<C-PageDown>": false,
         "<C-f>": false,
