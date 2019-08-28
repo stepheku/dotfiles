@@ -1,0 +1,103 @@
+{
+	// CCL-specific snippets
+
+	"CCL query header": {
+		"scope": "ccl",
+		"prefix": "ccl_header",
+		"body": [
+			"/*",
+			"${TM_FILENAME:ccl file name}",
+			"~~~~~~~~~~~~~~~~~~~~",
+			"${2:ccl query description}",
+			"*/"
+		],
+		"description": "Header at the top of CCL query files to describe what it does"
+	},
+
+	"CCL pharmacy orders":{
+		"scope": "ccl",
+		"prefix": "ccl_pharmacy_orders",
+		"body": [
+			"select",
+			"from orders o",
+			"plan o where o.orig_order_dt_tm > cnvtdatetime(curdate-30, 0)",
+			"	and o.product_id = 0",
+			"	and o.activity_type_cd = value(uar_get_code_by(\"MEANING\", 106, \"PHARMACY\"))",
+		],
+		"description": "Starting a query for pharmacy orders from the orders table"
+	},
+
+	"CCL pathway orders":{
+		"scope": "ccl",
+		"prefix": "ccl_pathway_orders",
+		"body": [
+			"select",
+			"from pathway pw",
+			"	, act_pw_comp apc",
+			"	, person p",
+			"	, orders o",
+			"	, encounter e",
+			"plan pw where pw.order_dt_tm > cnvtdatetime(curdate-${1:Days to go back}, 0)",
+			"	and type_mean = \"PATHWAY\"",
+			"join apc where apc.pathway_id = pw.pathway_id",
+			"	and apc.parent_entity_name = \"ORDERS\"",
+			"join p where p.person_id = pw.person_id",
+			"	and p.active_ind = 1",
+			"	and p.end_effective_dt_tm > sysdate",
+			"join e where e.encntr_id = pw.encntr_id",
+			"	and e.active_ind = 1",
+			"	and e.end_effective_dt_tm > sysdate",
+			"join o where o.order_id = apc.parent_entity_id",
+		],
+		"description": "Finding powerplans that have been placed and corresponding orders"
+	},
+	
+	"CCL control log":{
+		"scope": "ccl",
+		"prefix": "ccl_control_log",
+		"body": [
+";****************************************************************************",
+";    *                      GENERATED MODIFICATION CONTROL LOG              *",
+";    ************************************************************************",
+";    *                                                                      *",
+";    *Mod Date      Engineer             Comment                            *",
+";    *--- --------  -------------------- -----------------------------------*",
+";    *000 ${CURRENT_MONTH}/${CURRENT_DATE}/${CURRENT_YEAR_SHORT}  ${1:User Name}             Initial Release                    *",
+";****************************************************************************",
+";************************  END OF ALL MODCONTROL BLOCKS  ********************"
+		],
+		"description": "Generated modification control log"
+	},
+
+	"CCL program header":{
+		"scope": "ccl",
+		"prefix": "ccl_program_header",
+		"body": [
+			"/*****************************************************************************",
+			"",
+			"        Source file name:       ${1:source_file_name}",
+			"        Object name:",
+			"        Request #:",
+			"",
+			"        Product:                ${2:product}",
+			"        Product Team:           ${2:product}",
+			"        HNA Version:",
+			"        CCL Version:",
+			"",
+			"        Program purpose:        ${3:purpose}",
+			"",
+			"        Tables read:            ${4:tables}",
+			"",
+			"        Tables updated:         ",
+			"        Executing from:         ",
+			" ",
+			"        Special Notes:",
+			"",
+			"******************************************************************************/",
+			"",
+			"drop program ${1:source_file_name}:DBA go",
+			"create program ${1:source_file_name}:DBA"	
+		],
+		"description": "Program header"
+	}
+}
