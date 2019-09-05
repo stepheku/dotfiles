@@ -14,3 +14,4 @@ code --install-extension ritwickdey.LiveServer
 code --install-extension slevesque.vscode-autohotkey
 code --install-extension Justin J. Clark.ccl
 code --install-extension vscodevim.vim
+code --install-extension alefragnani.Bookmarks
