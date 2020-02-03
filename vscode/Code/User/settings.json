@@ -1,6 +1,7 @@
 {
     "window.zoomLevel": 1,
     "editor.lineNumbers": "relative",
+    "editor.rulers": [80],
     "vim.useSystemClipboard": true,
     // Ignore the following vim keybindings
     "vim.handleKeys": {
