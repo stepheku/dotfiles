@@ -64,7 +64,7 @@
             "    , encounter e",
             "    , encntr_alias ea",
             "plan pw where pw.order_dt_tm > cnvtdatetime(curdate-${1:days to go back}, 0)",
-            "	and pw.type_mean = \"PATHWAY\"",
+            "	and pw.type_mean in (\"PHASE\", \"CAREPLAN\")",
             "join apc where apc.pathway_id = pw.pathway_id",
             "	and apc.parent_entity_name = \"ORDERS\"",
             "join p where p.person_id = pw.person_id",
