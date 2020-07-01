@@ -3,7 +3,7 @@
 
     "CCL query header": {
         "scope": "ccl",
-        "prefix": "ccl_header",
+        "prefix": "query_header",
         "body": [
             "/*",
             "${TM_FILENAME:ccl file name}",
@@ -14,9 +14,9 @@
         "description": "Header at the top of CCL query files to describe what it does"
     },
 
-    "CCL pharmacy orders":{
+    "CCL query pharmacy orders":{
         "scope": "ccl",
-        "prefix": "ccl_pharmacy_orders",
+        "prefix": "query_pharmacy_orders",
         "body": [
             "select pt = p.name_full_formatted",
             "    , mrn = pa.alias",
@@ -48,9 +48,9 @@
         "description": "Starting a query for pharmacy orders from the orders table"
     },
 
-    "CCL pathway orders":{
+    "CCL query pathway orders":{
         "scope": "ccl",
-        "prefix": "ccl_pathway_orders",
+        "prefix": "query_pathway_orders",
         "body": [
             "select pt = p.name_full_formatted",
             "    , mrn = pa.alias",
@@ -63,7 +63,7 @@
             "    , orders o",
             "    , encounter e",
             "    , encntr_alias ea",
-            "plan pw where pw.order_dt_tm > cnvtdatetime(curdate-${1:Days to go back}, 0)",
+            "plan pw where pw.order_dt_tm > cnvtdatetime(curdate-${1:days to go back}, 0)",
             "	and pw.type_mean = \"PATHWAY\"",
             "join apc where apc.pathway_id = pw.pathway_id",
             "	and apc.parent_entity_name = \"ORDERS\"",
@@ -85,10 +85,42 @@
         ],
         "description": "Finding powerplans that have been placed and corresponding orders"
     },
+
+    "CCL query regimens":{
+        "scope": "ccl",
+        "prefix": "query_regimen",
+        "body": [
+            "select pt = p.name_full_formatted",
+            "    , mrn = pa.alias",
+            "    , fin = ea.alias",
+            "    , facility = uar_get_code_display(e.loc_facility_cd)",
+            "from regimen r",
+            "    , person p",
+            "    , person_alias pa",
+            "    , encounter e",
+            "    , encntr_alias ea",
+            "plan r where r.order_dt_tm > cnvtdatetime(curdate-${1:days to go back}, 0)",
+            "join p where p.person_id = r.person_id",
+            "    and p.active_ind = 1",
+            "    and p.end_effective_dt_tm > sysdate",
+            "join pa where pa.person_id = p.person_id",
+            "    and pa.active_ind = 1",
+            "    and pa.end_effective_dt_tm > sysdate",
+            "    and pa.person_alias_type_cd = value(uar_get_code_by(\"MEANING\", 4, \"MRN\"))",
+            "join e where e.encntr_id = r.encntr_id",
+            "    and e.active_ind = 1",
+            "    and e.end_effective_dt_tm > sysdate",
+            "join ea where ea.encntr_id = e.encntr_id",
+            "    and ea.active_ind = 1",
+            "    and ea.end_effective_dt_tm > sysdate",
+            "    and ea.encntr_alias_type_cd = value(uar_get_code_by(\"MEANING\", 319, \"FIN NBR\"))",
+        ],
+        "description": "Finding regimens that have already been placed"
+    },
     
     "CCL control log":{
         "scope": "ccl",
-        "prefix": "ccl_control_log",
+        "prefix": "control_log",
         "body": [
 ";****************************************************************************",
 ";    *                      GENERATED MODIFICATION CONTROL LOG              *",
@@ -103,9 +135,29 @@
         "description": "Generated modification control log"
     },
 
+    "Record structure list increment":{
+        "scope": "ccl",
+        "prefix": "rec_struc_list_incr",
+        "body": [
+            "/*Header section*/",
+            "${1:counter_var} = 0",
+            "stat = alterlist(${2:record_struct}, 10)",
+            "",
+            "/*Detail section*/",
+            "${1:counter_var} = ${1:counter_var} + 1",
+            "if(mod(${1:counter_var}, 10)=1)",
+            "    stat = alterlist(${2:record_struct}, ${1:counter_var} + 9)",
+            "endif",
+            "",
+            "/*Footer section*/",
+            "stat = alterlist(${2:record_struct}, ${1:counter_var})",
+        ],
+        "description": "List increment components in the report writer section"
+    },
+
     "CCL program header":{
         "scope": "ccl",
-        "prefix": "ccl_program_header",
+        "prefix": "program_header",
         "body": [
             "/*****************************************************************************",
             "",
